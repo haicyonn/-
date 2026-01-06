@@ -1,0 +1,21 @@
+; *************************************************************
+; *** Custom Scatter-Loading Description File (DMA in SRAM1) ***
+; *************************************************************
+
+LR_IROM1 0x08000000 0x00100000  {    ; load region size_region
+  ER_IROM1 0x08000000 0x00100000  {  ; load address = execution address
+   *.o (RESET, +First)
+   *(InRoot$$Sections)
+   .ANY (+RO)
+   .ANY (+XO)
+  }
+  ; Reserve 0x000BB800 (framebuffer, 800*480*2) at SDRAM base.
+  RW_SDRAM 0xD00BB800 0x00744800  {  ; RW data (SDRAM)
+   *(.sdram_bss)
+   *(.sdram)
+  }
+  RW_IRAM1 0x20000000 0x00020000  {  ; RW data (SRAM1+SRAM2)
+   *(.dma_buffer)
+   .ANY (+RW +ZI)
+  }
+}
